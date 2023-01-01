@@ -45,7 +45,7 @@ abstract class CeleryAbstract
             $connection_details['connector'] = AbstractAMQPConnector::GetBestInstalledExtensionName($ssl);
         }
         $amqp = AbstractAMQPConnector::GetConcrete($connection_details['connector']);
-        $connection = self::InitializeAMQPConnection($connection_details);
+        $connection = self::InitializeAMQPStreamConnection($connection_details);
         $amqp->Connect($connection);
 
         if ($is_backend) {
@@ -62,7 +62,7 @@ abstract class CeleryAbstract
     /**
      * @throws CeleryConnectionException on connection failure.
      */
-    public static function InitializeAMQPConnection($details)
+    public static function InitializeAMQPStreamConnection($details)
     {
         $amqp = AbstractAMQPConnector::GetConcrete($details['connector']);
         try {

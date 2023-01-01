@@ -10,13 +10,13 @@ namespace Celery;
 class PECLAMQPConnector extends AbstractAMQPConnector
 {
     /**
-     * Return AMQPConnection object passed to all other calls
+     * Return AMQPStreamConnection object passed to all other calls
      * @param array $details Array of connection details
-     * @return AMQPConnection
+     * @return AMQPStreamConnection
      */
     public function GetConnectionObject($details)
     {
-        $connection = new \AMQPConnection();
+        $connection = new \AMQPStreamConnection();
         $connection->setHost($details['host']);
         $connection->setLogin($details['login']);
         $connection->setPassword($details['password']);
@@ -38,7 +38,7 @@ class PECLAMQPConnector extends AbstractAMQPConnector
 
     /**
      * Post a task to exchange specified in $details
-     * @param AMQPConnection $connection Connection object
+     * @param AMQPStreamConnection $connection Connection object
      * @param array $details Array of connection details
      * @param string $body JSON-encoded task body
      * @param array $properties AMQP message properties
@@ -58,7 +58,7 @@ class PECLAMQPConnector extends AbstractAMQPConnector
 
     /**
      * Return result of task execution for $task_id
-     * @param AMQPConnection $connection Connection object
+     * @param AMQPStreamConnection $connection Connection object
      * @param string $task_id Celery task identifier
      * @param boolean $removeMessageFromQueue whether to remove message from queue
      * @return array array('body' => JSON-encoded message body, 'complete_result' => AMQPEnvelope object)

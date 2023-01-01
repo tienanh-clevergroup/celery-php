@@ -67,7 +67,7 @@ class AMQPLibConnector extends AbstractAMQPConnector
 
     public function GetConnectionObject($details)
     {
-        return new \PhpAmqpLib\Connection\AMQPConnection(
+        return new \PhpAmqpLib\Connection\AMQPStreamConnection(
             $details['host'],
             $details['port'],
             $details['login'],
@@ -85,26 +85,26 @@ class AMQPLibConnector extends AbstractAMQPConnector
     {
         $ch = $connection->channel();
 
-        $ch->queue_declare(
-            $details['binding'],    /* queue name - "celery" */
-            false,                  /* passive */
-            true,                   /* durable */
-            false,                  /* exclusive */
-            false                   /* auto_delete */
-        );
+        // $ch->queue_declare(
+        //     $details['binding'],    /* queue name - "celery" */
+        //     false,                  /* passive */
+        //     true,                   /* durable */
+        //     false,                  /* exclusive */
+        //     false                   /* auto_delete */
+        // );
 
-        $ch->exchange_declare(
-            $details['exchange'],    /* name */
-            'direct',                /* type */
-            false,                   /* passive */
-            true,                    /* durable */
-            false                    /* auto_delete */
-        );
+        // $ch->exchange_declare(
+        //     $details['exchange'],    /* name */
+        //     'direct',                /* type */
+        //     false,                   /* passive */
+        //     true,                    /* durable */
+        //     false                    /* auto_delete */
+        // );
 
-        $ch->queue_bind(
-            $details['binding'],    /* queue name - "celery" */
-            $details['exchange']    /* exchange name - "celery" */
-        );
+        // $ch->queue_bind(
+        //     $details['binding'],    /* queue name - "celery" */
+        //     $details['exchange']    /* exchange name - "celery" */
+        // );
 
         $properties['application_headers'] = new \PhpAmqpLib\Wire\AMQPTable($headers);
         $msg = new \PhpAmqpLib\Message\AMQPMessage($body, $properties);
@@ -129,7 +129,7 @@ class AMQPLibConnector extends AbstractAMQPConnector
 
     /**
      * Return result of task execution for $task_id
-     * @param \PhpAmqpLib\Connection\AMQPConnection $connection
+     * @param \PhpAmqpLib\Connection\AMQPStreamConnection $connection
      * @param string $task_id Celery task identifier
      * @param int $expire expire time result queue, milliseconds
      * @param boolean $removeMessageFromQueue whether to remove message from queue

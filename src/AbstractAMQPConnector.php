@@ -51,9 +51,9 @@ abstract class AbstractAMQPConnector
     {
         if ($ssl === true) { //pecl doesn't support ssl
             return 'php-amqplib-ssl';
-        } elseif (class_exists('\AMQPConnection') && extension_loaded('amqp')) {
+        } elseif (class_exists('\AMQPStreamConnection') && extension_loaded('amqp')) {
             return 'pecl';
-        } elseif (class_exists('\PhpAmqpLib\Connection\AMQPConnection')) {
+        } elseif (class_exists('\PhpAmqpLib\Connection\AMQPStreamConnection')) {
             return 'php-amqplib';
         } else {
             return 'unknown';
@@ -75,7 +75,7 @@ abstract class AbstractAMQPConnector
 
     /**
      * Post a task to exchange specified in $details
-     * @param AMQPConnection $connection Connection object
+     * @param AMQPStreamConnection $connection Connection object
      * @param array $details Array of connection details
      * @param string $body JSON-encoded task body
      * @param array $properties AMQP message properties

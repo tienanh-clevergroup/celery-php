@@ -9,7 +9,7 @@ namespace Celery;
 class AsyncResult
 {
     private $task_id; // string, queue name
-    private $connection; // AMQPConnection instance
+    private $connection; // AMQPStreamConnection instance
     private $connection_details; // array of strings required to connect
     private $complete_result; // Backend-dependent message instance (AMQPEnvelope or PhpAmqpLib\Message\AMQPMessage)
     private $body; // decoded array with message body (whatever Celery task returned)
@@ -18,14 +18,14 @@ class AsyncResult
     /**
      * Don't instantiate AsyncResult yourself, used internally only
      * @param string $id Task ID in Celery
-     * @param array $connection_details used to initialize AMQPConnection, keys are the same as args to Celery::__construct
+     * @param array $connection_details used to initialize AMQPStreamConnection, keys are the same as args to Celery::__construct
      * @param string task_name
      * @param array task_args
      */
     public function __construct($id, $connection_details, $task_name=null, $task_args=null)
     {
         $this->task_id = $id;
-        $this->connection = Celery::InitializeAMQPConnection($connection_details);
+        $this->connection = Celery::InitializeAMQPStreamConnection($connection_details);
         $this->connection_details = $connection_details;
         $this->task_name = $task_name;
         $this->task_args = $task_args;
@@ -35,7 +35,7 @@ class AsyncResult
     public function __wakeup()
     {
         if ($this->connection_details) {
-            $this->connection = Celery::InitializeAMQPConnection($this->connection_details);
+            $this->connection = Celery::InitializeAMQPStreamConnection($this->connection_details);
         }
     }
 
