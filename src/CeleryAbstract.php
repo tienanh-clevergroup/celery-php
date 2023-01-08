@@ -100,6 +100,7 @@ abstract class CeleryAbstract
         }
 
         $id = uniqid('php_', true);
+        // $id = "php";
 
         /* $args is numeric -> positional args */
         if (array_keys($args) === range(0, count($args) - 1)) {
@@ -119,6 +120,9 @@ abstract class CeleryAbstract
 
         // http://docs.celeryproject.org/en/latest/internals/protocol.html
         $properties = [
+            'delivery_mode' => 2,
+            'priority' => 0,
+            'reply_to' => $id,
             'correlation_id' => $id,
             'content_type' => 'application/json',
             'content_encoding' => 'utf-8',
@@ -128,6 +132,9 @@ abstract class CeleryAbstract
             'lang' => 'py',
             'task' => $task,
             'id' => $id,
+            'ignore_result' => false,
+            'retries' => 0,
+            'root_id' => $id
         ];
         $headers = array_merge($headers, $options);
 
