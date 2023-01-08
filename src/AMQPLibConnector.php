@@ -84,7 +84,20 @@ class AMQPLibConnector extends AbstractAMQPConnector
     public function PostToExchange($connection, $details, $body, $properties, $headers)
     {
         $ch = $connection->channel();
+        $expire_args = null;
+        if (!empty($details['result_expire'])) {
+            $expire_args = ["x-expires" => ["I", $details['result_expire']]];
+        }
 
+        $ch->queue_declare(
+            $properties['reply_to'],               /* queue name */
+            false,                  /* passive */
+            true,                   /* durable */
+            false,                  /* exclusive */
+            true,                   /* auto_delete */
+            false,                  /*no wait*/
+            $expire_args
+        );
         // $ch->queue_declare(
         //     $details['binding'],    /* queue name - "celery" */
         //     false,                  /* passive */
@@ -140,20 +153,20 @@ class AMQPLibConnector extends AbstractAMQPConnector
     {
         if (!$this->receiving_channel) {
             $ch = $connection->channel();
-            $expire_args = null;
-            if (!empty($expire)) {
-                $expire_args = ["x-expires" => ["I", $expire]];
-            }
+            // $expire_args = null;
+            // if (!empty($expire)) {
+            //     $expire_args = ["x-expires" => ["I", $expire]];
+            // }
 
-            $ch->queue_declare(
-                $task_id,               /* queue name */
-                false,                  /* passive */
-                true,                   /* durable */
-                false,                  /* exclusive */
-                true,                   /* auto_delete */
-                false,                  /*no wait*/
-                $expire_args
-            );
+            // $ch->queue_declare(
+            //     $task_id,               /* queue name */
+            //     false,                  /* passive */
+            //     true,                   /* durable */
+            //     false,                  /* exclusive */
+            //     true,                   /* auto_delete */
+            //     false,                  /*no wait*/
+            //     $expire_args
+            // );
 
             // try {
             //     $ch->queue_bind($task_id, 'celeryresults');
